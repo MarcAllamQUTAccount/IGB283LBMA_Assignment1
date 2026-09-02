@@ -13,6 +13,24 @@ public struct IGB283Vector
         this.z = z;
     }
 
+    public float this[int index]
+    {
+        get
+        {
+            if (index == 0) return x;
+            if (index == 1) return y;
+            if (index == 2) return z;
+            throw new System.IndexOutOfRangeException();
+        }
+        set
+        {
+            if (index == 0) x = value;
+            else if (index == 1) y = value;
+            else if (index == 2) z = value;
+            else throw new System.IndexOutOfRangeException();
+        }
+    }
+
     // Addition
     public static IGB283Vector operator +(IGB283Vector a, IGB283Vector b)
     {
@@ -51,11 +69,5 @@ public struct IGB283Vector
     public Vector3 ToUnityVector3()
     {
         return new Vector3(x, y, z);
-    }
-
-    // Create from Unity Vector3 (if needed)
-    public static IGB283Vector FromUnityVector3(Vector3 v)
-    {
-        return new IGB283Vector(v.x, v.y, v.z);
     }
 }
