@@ -35,7 +35,7 @@ public class AssignmentShape : MonoBehaviour
         CreateShape();
 
         shapes = new ShapeInstance[2];
-
+        // make it variables instead to track the x or y values of the boundary boxes
         shapes[0] = new ShapeInstance()
         {
             leftPoint = new IGB283Vector(-5, 0, 0),
@@ -94,7 +94,7 @@ public class AssignmentShape : MonoBehaviour
         List<Color> allColors = new List<Color>();
 
         int vertexOffset = 0;
-
+        // de-complexify (goofy marc (๑ᵔ⤙ᵔ๑))
         foreach (var s in shapes)
         {
             for (int i = 0; i < s.transformedVertices.Length; i++)
