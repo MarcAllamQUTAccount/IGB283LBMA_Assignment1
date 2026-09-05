@@ -55,7 +55,7 @@ public struct IGB283Vector
         return a.x * b.x + a.y * b.y + a.z * b.z;
     }
 
-    // Cross product (for 3D, but we’ll mostly use z as 0)
+    // Cross product 
     public static IGB283Vector Cross(IGB283Vector a, IGB283Vector b)
     {
         return new IGB283Vector(

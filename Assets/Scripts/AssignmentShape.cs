@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.InputSystem;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class AssignmentShape : MonoBehaviour
 {
@@ -9,6 +9,12 @@ public class AssignmentShape : MonoBehaviour
     private Mesh mesh;
     private IGB283Vector[] baseVertices;
     private int[] triangles;
+    private float boxLeftPosX;
+    private float boxLeftPosY;
+    private float boxRightPosX;
+    private float boxUpPosY;
+    private float boxDownPosY;
+    private float moveSpeedVar = 0.5f;
 
     [System.Serializable]
     public class ShapeInstance
@@ -21,36 +27,45 @@ public class AssignmentShape : MonoBehaviour
         public float time;
         public float t;
 
+        public float phase;
+
         public IGB283Vector[] transformedVertices;
     }
 
     public ShapeInstance[] shapes;
-
+    
     void Start()
     {
+
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
         GetComponent<MeshRenderer>().material = material;
 
         CreateShape();
+        // getting boundary left and right
+        boxLeftPosX = GameObject.Find("BoundaryLeft").transform.position.x;
+        boxLeftPosY = GameObject.Find("BoundaryLeft").transform.position.y;
+        boxRightPosX = GameObject.Find("BoundaryRight").transform.position.x;
 
         shapes = new ShapeInstance[2];
-
+        // change the variable thingo to change when the boundary box x or y changes
         shapes[0] = new ShapeInstance()
         {
-            leftPoint = new IGB283Vector(-5, 0, 0),
-            rightPoint = new IGB283Vector(5, 0, 0),
-            movespeed = 0.5f,
+            leftPoint = new IGB283Vector(boxLeftPosX, boxLeftPosY, 0),
+            rightPoint = new IGB283Vector(boxRightPosX, boxLeftPosY, 0),
+            movespeed = moveSpeedVar,
             rotationSpeed = 0.5f,
             time = 0f,
             transformedVertices = new IGB283Vector[baseVertices.Length]
         };
-
+        // getting boundary up and down
+        boxUpPosY = GameObject.Find("BoundaryUp").transform.position.y;
+        boxDownPosY = GameObject.Find("BoundaryDown").transform.position.y;
         shapes[1] = new ShapeInstance()
         {
-            leftPoint = new IGB283Vector(0, -5, 0),
-            rightPoint = new IGB283Vector(0, 5, 0),
-            movespeed = 0.5f,
+            leftPoint = new IGB283Vector(0, boxDownPosY, 0),
+            rightPoint = new IGB283Vector(0, boxUpPosY, 0),
+            movespeed = moveSpeedVar,
             rotationSpeed = 0.5f,
             time = 0f,
             transformedVertices = new IGB283Vector[baseVertices.Length]
@@ -60,11 +75,27 @@ public class AssignmentShape : MonoBehaviour
 
     void Update()
     {
+        boxUpPosY = GameObject.Find("BoundaryUp").transform.position.y;
+        boxDownPosY = GameObject.Find("BoundaryDown").transform.position.y;
+        boxLeftPosX = GameObject.Find("BoundaryLeft").transform.position.x;
+        boxLeftPosY = GameObject.Find("BoundaryLeft").transform.position.y;
+        boxRightPosX = GameObject.Find("BoundaryRight").transform.position.x;
+        if (Keyboard.current.rightArrowKey.wasPressedThisFrame)
+        {
+            moveSpeedVar += 0.1f;
+        }
+        if (Keyboard.current.leftArrowKey.wasPressedThisFrame)
+        {
+            moveSpeedVar -= 0.1f;
+        }
         foreach (var s in shapes)
         {
-            s.time += Time.deltaTime;
+            s.movespeed = moveSpeedVar;
+            //s.time += Time.deltaTime;
 
-            s.t = Mathf.PingPong(s.time * s.movespeed, 1f);
+            //s.t = Mathf.PingPong(s.time * s.movespeed, 1f);
+            s.phase += Time.deltaTime * s.movespeed;
+            s.t = Mathf.PingPong(s.phase, 1f);
 
             IGB283Vector pos = new IGB283Vector(
                 Mathf.Lerp(s.leftPoint.x, s.rightPoint.x, s.t),
@@ -94,7 +125,7 @@ public class AssignmentShape : MonoBehaviour
         List<Color> allColors = new List<Color>();
 
         int vertexOffset = 0;
-
+        // verify complexity (goofy marc moment (๑ᵔ⤙ᵔ๑))
         foreach (var s in shapes)
         {
             for (int i = 0; i < s.transformedVertices.Length; i++)
