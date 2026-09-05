@@ -48,7 +48,11 @@ public class AssignmentShape : MonoBehaviour
         boxRightPosX = GameObject.Find("BoundaryRight").transform.position.x;
 
         shapes = new ShapeInstance[2];
+<<<<<<< HEAD
         // change the variable thingo to change when the boundary box x or y changes
+=======
+        // make it variables instead to track the x or y values of the boundary boxes
+>>>>>>> 00faa2024fbd33a21e8dcbe64eb1216359d23db0
         shapes[0] = new ShapeInstance()
         {
             leftPoint = new IGB283Vector(boxLeftPosX, boxLeftPosY, 0),
@@ -125,7 +129,11 @@ public class AssignmentShape : MonoBehaviour
         List<Color> allColors = new List<Color>();
 
         int vertexOffset = 0;
+<<<<<<< HEAD
         // verify complexity (goofy marc moment (๑ᵔ⤙ᵔ๑))
+=======
+        // de-complexify (goofy marc (๑ᵔ⤙ᵔ๑))
+>>>>>>> 00faa2024fbd33a21e8dcbe64eb1216359d23db0
         foreach (var s in shapes)
         {
             for (int i = 0; i < s.transformedVertices.Length; i++)
