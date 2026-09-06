@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class AssignmentShape : MonoBehaviour
 {
@@ -10,18 +10,21 @@ public class AssignmentShape : MonoBehaviour
     private Mesh mesh;
     private IGB283Vector[] baseVertices;
     private int[] triangles;
+
     private float boxLeftPosX;
     private float boxLeftPosY;
     private float boxRightPosX;
     private float boxUpPosY;
     private float boxDownPosY;
-    private float moveSpeedVar = 0.5f;
+
+    private float moveSpeedVar = 1f;
 
     [System.Serializable]
     public class ShapeInstance
     {
         public IGB283Vector leftPoint;
         public IGB283Vector rightPoint;
+
         public float movespeed;
         public float rotationSpeed;
 
@@ -30,24 +33,25 @@ public class AssignmentShape : MonoBehaviour
         public float phase;
 
         public IGB283Vector[] transformedVertices;
-
         public Color color;
     }
 
     public ShapeInstance[] shapes;
-    
+
     void Start()
     {
-
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
         GetComponent<MeshRenderer>().material = material;
 
         CreateShape();
-        // getting boundary left and right
+
         boxLeftPosX = GameObject.Find("BoundaryLeft").transform.position.x;
         boxLeftPosY = GameObject.Find("BoundaryLeft").transform.position.y;
         boxRightPosX = GameObject.Find("BoundaryRight").transform.position.x;
+
+        boxUpPosY = GameObject.Find("BoundaryUp").transform.position.y;
+        boxDownPosY = GameObject.Find("BoundaryDown").transform.position.y;
 
         shapes = new ShapeInstance[2];
 
@@ -60,18 +64,17 @@ public class AssignmentShape : MonoBehaviour
             time = 0f,
             transformedVertices = new IGB283Vector[baseVertices.Length]
         };
-        // getting boundary up and down
-        boxUpPosY = GameObject.Find("BoundaryUp").transform.position.y;
-        boxDownPosY = GameObject.Find("BoundaryDown").transform.position.y;
+
         shapes[1] = new ShapeInstance()
         {
             leftPoint = new IGB283Vector(0, boxDownPosY, 0),
             rightPoint = new IGB283Vector(0, boxUpPosY, 0),
-            movespeed = 0.75f,
+            movespeed = 1.25f,
             rotationSpeed = 0.75f,
             time = 0f,
             transformedVertices = new IGB283Vector[baseVertices.Length]
         };
+
         UpdateMesh();
     }
 
@@ -83,29 +86,24 @@ public class AssignmentShape : MonoBehaviour
         boxLeftPosY = GameObject.Find("BoundaryLeft").transform.position.y;
         boxRightPosX = GameObject.Find("BoundaryRight").transform.position.x;
 
-        // Update the left and right points of the shapes based on the boundary positions
         shapes[0].leftPoint = new IGB283Vector(boxLeftPosX, boxLeftPosY, 0);
         shapes[0].rightPoint = new IGB283Vector(boxRightPosX, boxLeftPosY, 0);
+
         shapes[1].leftPoint = new IGB283Vector(0, boxDownPosY, 0);
         shapes[1].rightPoint = new IGB283Vector(0, boxUpPosY, 0);
 
         if (Keyboard.current.rightArrowKey.wasPressedThisFrame)
-        {
             moveSpeedVar += 0.1f;
-        }
+
         if (Keyboard.current.leftArrowKey.wasPressedThisFrame)
-        {
             moveSpeedVar -= 0.1f;
-        }
+
         foreach (var s in shapes)
         {
-<<<<<<< HEAD
-=======
-            s.movespeed = moveSpeedVar;
->>>>>>> 6720f8cb014f8d573cf4cb579c56ac3c00ebb6a5
             s.time += Time.deltaTime;
 
             float currentSpeed = s.movespeed * moveSpeedVar;
+
             s.phase += Time.deltaTime * currentSpeed;
             s.t = Mathf.PingPong(s.phase, 1f);
 
@@ -125,9 +123,7 @@ public class AssignmentShape : MonoBehaviour
             Matrix3x3 trs = IGB283Transform.TRS(pos, angle, scale);
 
             for (int i = 0; i < baseVertices.Length; i++)
-            {
                 s.transformedVertices[i] = IGB283Transform.Apply(trs, baseVertices[i]);
-            }
         }
 
         UpdateMesh();
@@ -135,20 +131,8 @@ public class AssignmentShape : MonoBehaviour
 
     void UpdateMesh()
     {
-<<<<<<< HEAD
-        int totalVerts = 0;
-=======
-        List<Vector3> unityVerts = new List<Vector3>();
-        List<int> allTriangles = new List<int>();
-        List<Color> allColors = new List<Color>();
+        int totalVerts = shapes[0].transformedVertices.Length + shapes[1].transformedVertices.Length;
 
-        int vertexOffset = 0;
-
->>>>>>> 6720f8cb014f8d573cf4cb579c56ac3c00ebb6a5
-        foreach (var s in shapes)
-        {
-            totalVerts += s.transformedVertices.Length;
-        }
         Vector3[] unityVerts = new Vector3[totalVerts];
         int[] allTris = new int[triangles.Length * shapes.Length];
         Color[] allColors = new Color[totalVerts];
@@ -165,9 +149,7 @@ public class AssignmentShape : MonoBehaviour
             }
 
             for (int i = 0; i < triangles.Length; i++)
-            {
                 allTris[tOffset + i] = triangles[i] + vOffset;
-            }
 
             vOffset += shapes[s].transformedVertices.Length;
             tOffset += triangles.Length;
@@ -178,6 +160,7 @@ public class AssignmentShape : MonoBehaviour
         mesh.triangles = allTris;
         mesh.colors = allColors;
     }
+
     void CreateShape()
     {
         int segments = 40;
@@ -185,7 +168,6 @@ public class AssignmentShape : MonoBehaviour
         float startRadius = 3.0f;
         float endRadius = 0.3f;
         float turns = 2.5f;
-
         float bandWidth = 0.4f;
 
         List<IGB283Vector> verts = new List<IGB283Vector>();
@@ -205,29 +187,11 @@ public class AssignmentShape : MonoBehaviour
             float innerRadius0 = Mathf.Max(radius0 - bandWidth, 0.1f);
             float innerRadius1 = Mathf.Max(radius1 - bandWidth, 0.1f);
 
-            IGB283Vector outer0 = new IGB283Vector(
-                Mathf.Cos(angle0) * radius0,
-                Mathf.Sin(angle0) * radius0,
-                0f
-            );
+            IGB283Vector outer0 = new IGB283Vector(Mathf.Cos(angle0) * radius0, Mathf.Sin(angle0) * radius0, 0f);
+            IGB283Vector outer1 = new IGB283Vector(Mathf.Cos(angle1) * radius1, Mathf.Sin(angle1) * radius1, 0f);
 
-            IGB283Vector outer1 = new IGB283Vector(
-                Mathf.Cos(angle1) * radius1,
-                Mathf.Sin(angle1) * radius1,
-                0f
-            );
-
-            IGB283Vector inner0 = new IGB283Vector(
-            Mathf.Cos(angle0) * innerRadius0,
-            Mathf.Sin(angle0) * innerRadius0,
-            0f
-            );
-
-            IGB283Vector inner1 = new IGB283Vector(
-                Mathf.Cos(angle1) * innerRadius1,
-                Mathf.Sin(angle1) * innerRadius1,
-                0f
-            );
+            IGB283Vector inner0 = new IGB283Vector(Mathf.Cos(angle0) * innerRadius0, Mathf.Sin(angle0) * innerRadius0, 0f);
+            IGB283Vector inner1 = new IGB283Vector(Mathf.Cos(angle1) * innerRadius1, Mathf.Sin(angle1) * innerRadius1, 0f);
 
             int v0 = verts.Count;
             int v1 = verts.Count + 1;
@@ -239,15 +203,11 @@ public class AssignmentShape : MonoBehaviour
             verts.Add(outer1);
             verts.Add(inner1);
 
-
             tris.Add(v0); tris.Add(v2); tris.Add(v1);
             tris.Add(v1); tris.Add(v2); tris.Add(v3);
-
         }
 
         baseVertices = verts.ToArray();
         triangles = tris.ToArray();
     }
-
-
 }
