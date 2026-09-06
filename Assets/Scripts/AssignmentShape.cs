@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
@@ -26,10 +27,11 @@ public class AssignmentShape : MonoBehaviour
 
         public float time;
         public float t;
-
         public float phase;
 
         public IGB283Vector[] transformedVertices;
+
+        public Color color;
     }
 
     public ShapeInstance[] shapes;
@@ -48,16 +50,12 @@ public class AssignmentShape : MonoBehaviour
         boxRightPosX = GameObject.Find("BoundaryRight").transform.position.x;
 
         shapes = new ShapeInstance[2];
-<<<<<<< HEAD
-        // change the variable thingo to change when the boundary box x or y changes
-=======
-        // make it variables instead to track the x or y values of the boundary boxes
->>>>>>> 00faa2024fbd33a21e8dcbe64eb1216359d23db0
+
         shapes[0] = new ShapeInstance()
         {
             leftPoint = new IGB283Vector(boxLeftPosX, boxLeftPosY, 0),
             rightPoint = new IGB283Vector(boxRightPosX, boxLeftPosY, 0),
-            movespeed = moveSpeedVar,
+            movespeed = 0.5f,
             rotationSpeed = 0.5f,
             time = 0f,
             transformedVertices = new IGB283Vector[baseVertices.Length]
@@ -69,8 +67,8 @@ public class AssignmentShape : MonoBehaviour
         {
             leftPoint = new IGB283Vector(0, boxDownPosY, 0),
             rightPoint = new IGB283Vector(0, boxUpPosY, 0),
-            movespeed = moveSpeedVar,
-            rotationSpeed = 0.5f,
+            movespeed = 0.75f,
+            rotationSpeed = 0.75f,
             time = 0f,
             transformedVertices = new IGB283Vector[baseVertices.Length]
         };
@@ -84,6 +82,13 @@ public class AssignmentShape : MonoBehaviour
         boxLeftPosX = GameObject.Find("BoundaryLeft").transform.position.x;
         boxLeftPosY = GameObject.Find("BoundaryLeft").transform.position.y;
         boxRightPosX = GameObject.Find("BoundaryRight").transform.position.x;
+
+        // Update the left and right points of the shapes based on the boundary positions
+        shapes[0].leftPoint = new IGB283Vector(boxLeftPosX, boxLeftPosY, 0);
+        shapes[0].rightPoint = new IGB283Vector(boxRightPosX, boxLeftPosY, 0);
+        shapes[1].leftPoint = new IGB283Vector(0, boxDownPosY, 0);
+        shapes[1].rightPoint = new IGB283Vector(0, boxUpPosY, 0);
+
         if (Keyboard.current.rightArrowKey.wasPressedThisFrame)
         {
             moveSpeedVar += 0.1f;
@@ -94,18 +99,20 @@ public class AssignmentShape : MonoBehaviour
         }
         foreach (var s in shapes)
         {
-            s.movespeed = moveSpeedVar;
-            //s.time += Time.deltaTime;
+            s.time += Time.deltaTime;
 
-            //s.t = Mathf.PingPong(s.time * s.movespeed, 1f);
-            s.phase += Time.deltaTime * s.movespeed;
+            float currentSpeed = s.movespeed * moveSpeedVar;
+            s.phase += Time.deltaTime * currentSpeed;
             s.t = Mathf.PingPong(s.phase, 1f);
+
+            s.color = Color.Lerp(Color.black, Color.white, s.t);
 
             IGB283Vector pos = new IGB283Vector(
                 Mathf.Lerp(s.leftPoint.x, s.rightPoint.x, s.t),
                 Mathf.Lerp(s.leftPoint.y, s.rightPoint.y, s.t),
                 0f
             );
+
             float angle = s.time * s.rotationSpeed;
 
             float scaleValue = Mathf.Lerp(0.5f, 2.0f, s.t);
@@ -124,43 +131,39 @@ public class AssignmentShape : MonoBehaviour
 
     void UpdateMesh()
     {
-        List<Vector3> unityVerts = new List<Vector3>();
-        List<int> allTriangles = new List<int>();
-        List<Color> allColors = new List<Color>();
-
-        int vertexOffset = 0;
-<<<<<<< HEAD
-        // verify complexity (goofy marc moment (๑ᵔ⤙ᵔ๑))
-=======
-        // de-complexify (goofy marc (๑ᵔ⤙ᵔ๑))
->>>>>>> 00faa2024fbd33a21e8dcbe64eb1216359d23db0
+        int totalVerts = 0;
         foreach (var s in shapes)
         {
-            for (int i = 0; i < s.transformedVertices.Length; i++)
+            totalVerts += s.transformedVertices.Length;
+        }
+        Vector3[] unityVerts = new Vector3[totalVerts];
+        int[] allTris = new int[triangles.Length * shapes.Length];
+        Color[] allColors = new Color[totalVerts];
+
+        int vOffset = 0;
+        int tOffset = 0;
+
+        for (int s = 0; s < shapes.Length; s++)
+        {
+            for (int i = 0; i < shapes[s].transformedVertices.Length; i++)
             {
-                unityVerts.Add(s.transformedVertices[i].ToUnityVector3());
+                unityVerts[vOffset + i] = shapes[s].transformedVertices[i].ToUnityVector3();
+                allColors[vOffset + i] = shapes[s].color;
             }
 
             for (int i = 0; i < triangles.Length; i++)
             {
-                allTriangles.Add(triangles[i] + vertexOffset);
+                allTris[tOffset + i] = triangles[i] + vOffset;
             }
 
-            Color c = Color.Lerp(Color.black, Color.white, s.t);
-
-            for (int i = 0; i < s.transformedVertices.Length; i++)
-            {
-                allColors.Add(c);  
-            }
-
-            vertexOffset += s.transformedVertices.Length;
+            vOffset += shapes[s].transformedVertices.Length;
+            tOffset += triangles.Length;
         }
 
         mesh.Clear();
-        mesh.vertices = unityVerts.ToArray();
-        mesh.triangles = allTriangles.ToArray();
-        mesh.colors = allColors.ToArray();
-        mesh.RecalculateNormals();
+        mesh.vertices = unityVerts;
+        mesh.triangles = allTris;
+        mesh.colors = allColors;
     }
     void CreateShape()
     {
