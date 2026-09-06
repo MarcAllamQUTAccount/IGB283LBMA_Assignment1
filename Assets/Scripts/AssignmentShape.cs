@@ -99,6 +99,10 @@ public class AssignmentShape : MonoBehaviour
         }
         foreach (var s in shapes)
         {
+<<<<<<< HEAD
+=======
+            s.movespeed = moveSpeedVar;
+>>>>>>> 6720f8cb014f8d573cf4cb579c56ac3c00ebb6a5
             s.time += Time.deltaTime;
 
             float currentSpeed = s.movespeed * moveSpeedVar;
@@ -131,7 +135,16 @@ public class AssignmentShape : MonoBehaviour
 
     void UpdateMesh()
     {
+<<<<<<< HEAD
         int totalVerts = 0;
+=======
+        List<Vector3> unityVerts = new List<Vector3>();
+        List<int> allTriangles = new List<int>();
+        List<Color> allColors = new List<Color>();
+
+        int vertexOffset = 0;
+
+>>>>>>> 6720f8cb014f8d573cf4cb579c56ac3c00ebb6a5
         foreach (var s in shapes)
         {
             totalVerts += s.transformedVertices.Length;
