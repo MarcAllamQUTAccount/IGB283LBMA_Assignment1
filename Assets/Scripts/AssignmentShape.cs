@@ -14,6 +14,7 @@ public class AssignmentShape : MonoBehaviour
     private float boxLeftPosX;
     private float boxLeftPosY;
     private float boxRightPosX;
+    private float boxRightPosY;
     private float boxUpPosY;
     private float boxDownPosY;
 
@@ -49,6 +50,8 @@ public class AssignmentShape : MonoBehaviour
         boxLeftPosX = GameObject.Find("BoundaryLeft").transform.position.x;
         boxLeftPosY = GameObject.Find("BoundaryLeft").transform.position.y;
         boxRightPosX = GameObject.Find("BoundaryRight").transform.position.x;
+        boxRightPosY = GameObject.Find("BoundaryRight").transform.position.y;
+
 
         boxUpPosY = GameObject.Find("BoundaryUp").transform.position.y;
         boxDownPosY = GameObject.Find("BoundaryDown").transform.position.y;
@@ -58,7 +61,7 @@ public class AssignmentShape : MonoBehaviour
         shapes[0] = new ShapeInstance()
         {
             leftPoint = new IGB283Vector(boxLeftPosX, boxLeftPosY, 0),
-            rightPoint = new IGB283Vector(boxRightPosX, boxLeftPosY, 0),
+            rightPoint = new IGB283Vector(boxRightPosX, boxRightPosY, 0),
             movespeed = 0.5f,
             rotationSpeed = 0.5f,
             time = 0f,
@@ -85,9 +88,10 @@ public class AssignmentShape : MonoBehaviour
         boxLeftPosX = GameObject.Find("BoundaryLeft").transform.position.x;
         boxLeftPosY = GameObject.Find("BoundaryLeft").transform.position.y;
         boxRightPosX = GameObject.Find("BoundaryRight").transform.position.x;
+        boxRightPosY = GameObject.Find("BoundaryRight").transform.position.y;  
 
         shapes[0].leftPoint = new IGB283Vector(boxLeftPosX, boxLeftPosY, 0);
-        shapes[0].rightPoint = new IGB283Vector(boxRightPosX, boxLeftPosY, 0);
+        shapes[0].rightPoint = new IGB283Vector(boxRightPosX, boxRightPosY, 0);
 
         shapes[1].leftPoint = new IGB283Vector(0, boxDownPosY, 0);
         shapes[1].rightPoint = new IGB283Vector(0, boxUpPosY, 0);
