@@ -223,7 +223,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60fcfcf2a4976a7409a8e7af7e39841a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoxMovement
-  objectsToMove: []
 --- !u!64 &168595421
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -350,7 +349,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60fcfcf2a4976a7409a8e7af7e39841a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoxMovement
-  objectsToMove: []
 --- !u!64 &270298146
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -477,11 +475,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60fcfcf2a4976a7409a8e7af7e39841a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoxMovement
-  objectsToMove:
-  - {fileID: 271102291}
-  - {fileID: 270298144}
-  - {fileID: 168595419}
-  - {fileID: 364195624}
 --- !u!64 &271102293
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -745,7 +738,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60fcfcf2a4976a7409a8e7af7e39841a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoxMovement
-  objectsToMove: []
 --- !u!64 &364195626
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -907,6 +899,7 @@ GameObject:
   - component: {fileID: 687167804}
   - component: {fileID: 687167803}
   - component: {fileID: 687167802}
+  - component: {fileID: 687167805}
   m_Layer: 0
   m_Name: AssignmentShapeObject
   m_TagString: Untagged
@@ -1000,6 +993,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 687167800}
   m_Mesh: {fileID: 0}
+--- !u!114 &687167805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 687167800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ab96b70d0f3235418a6d5d1038cc030, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MeshDebug
+  shape: {fileID: 687167802}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0

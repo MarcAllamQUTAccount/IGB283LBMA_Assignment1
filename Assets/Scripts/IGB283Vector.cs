@@ -31,40 +31,6 @@ public struct IGB283Vector
         }
     }
 
-    // Addition
-    public static IGB283Vector operator +(IGB283Vector a, IGB283Vector b)
-    {
-        return new IGB283Vector(a.x + b.x, a.y + b.y, a.z + b.z);
-    }
-
-    // Subtraction
-    public static IGB283Vector operator -(IGB283Vector a, IGB283Vector b)
-    {
-        return new IGB283Vector(a.x - b.x, a.y - b.y, a.z - b.z);
-    }
-
-    // Negation
-    public static IGB283Vector operator -(IGB283Vector a)
-    {
-        return new IGB283Vector(-a.x, -a.y, -a.z);
-    }
-
-    // Dot product
-    public static float Dot(IGB283Vector a, IGB283Vector b)
-    {
-        return a.x * b.x + a.y * b.y + a.z * b.z;
-    }
-
-    // Cross product 
-    public static IGB283Vector Cross(IGB283Vector a, IGB283Vector b)
-    {
-        return new IGB283Vector(
-            a.y * b.z - a.z * b.y,
-            a.z * b.x - a.x * b.z,
-            a.x * b.y - a.y * b.x
-        );
-    }
-
     // Convert to Unity Vector3 (for mesh)
     public Vector3 ToUnityVector3()
     {
