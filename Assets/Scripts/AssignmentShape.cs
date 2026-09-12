@@ -8,8 +8,8 @@ public class AssignmentShape : MonoBehaviour
     [SerializeField] private Material material;
 
     private Mesh mesh;
-    private IGB283Vector[] baseVertices;
-    private int[] triangles;
+    public IGB283Vector[] baseVertices { get; private set; }
+    public int[] triangles { get; private set; }
 
     private float boxLeftPosX;
     private float boxLeftPosY;
